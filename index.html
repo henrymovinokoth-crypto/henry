@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Henry – Meet anyone, anywhere</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#14102b;--bg2:#1f1846;--card:#2a2160;--text:#fff;--mute:#c9c3f0;--pink:#ff4d8d;--orange:#ff9f1c;--teal:#2ec4b6;--blue:#4cc9f0;--violet:#8b5cf6;--green:#3ddc84}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#fff7ec;--bg2:#ffe9cf;--card:#fff;--text:#241a4d;--mute:#5d5486}}
+:root[data-theme="light"]{--bg:#fff7ec;--bg2:#ffe9cf;--card:#fff;--text:#241a4d;--mute:#5d5486}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 "Trebuchet MS","Segoe UI",system-ui,sans-serif}
+h1,h2,h3{font-family:"Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;line-height:1.1;margin:0}
+button{font:inherit;cursor:pointer;border:0;color:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0;flex-wrap:wrap;gap:10px}
+.logo{font:800 28px "Arial Rounded MT Bold",system-ui,sans-serif;display:flex;align-items:center;gap:10px}
+.logo i{width:38px;height:38px;border-radius:12px;background:conic-gradient(var(--pink),var(--orange),var(--teal),var(--blue),var(--violet),var(--pink));display:grid;place-items:center;font-style:normal;color:#fff}
+nav .links{display:flex;gap:18px;align-items:center}
+nav a{color:var(--mute);text-decoration:none;font-weight:700}
+.btn{padding:12px 22px;border-radius:999px;font-weight:800;background:linear-gradient(90deg,var(--pink),var(--orange));color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.25);transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.btn.alt{background:linear-gradient(90deg,var(--teal),var(--blue))}
+.btn.ghost{background:var(--card);box-shadow:none;border:2px solid var(--violet)}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;padding:36px 0 56px}
+.hero h1{font-size:clamp(38px,6vw,68px);background:linear-gradient(90deg,var(--pink),var(--orange),var(--teal),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mute);font-size:19px;max-width:46ch}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+input{font:inherit;padding:12px 16px;border-radius:999px;border:2px solid var(--violet);background:var(--card);color:var(--text);min-width:0;flex:1 1 180px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{aspect-ratio:1;border-radius:22px;display:grid;place-items:center;font-size:38px;font-weight:800;color:#fff}
+.tile:nth-child(1){background:var(--pink)}.tile:nth-child(2){background:var(--teal)}.tile:nth-child(3){background:var(--violet)}
+.tile:nth-child(4){background:var(--orange)}.tile:nth-child(5){background:var(--blue)}.tile:nth-child(6){background:var(--green)}
+section{padding:44px 0}
+section h2{font-size:clamp(28px,4vw,42px);margin-bottom:8px}
+.sub{color:var(--mute);margin:0 0 26px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.card{background:var(--card);border-radius:24px;padding:24px;border-top:8px solid var(--c,var(--pink))}
+.card h3{font-size:22px;margin-bottom:8px}.card p{margin:0;color:var(--mute)}
+.price{font:800 38px "Arial Rounded MT Bold",system-ui,sans-serif;margin:10px 0}
+.price small{font-size:15px;color:var(--mute);font-weight:400}
+.card ul{padding-left:20px;margin:0 0 18px;color:var(--mute)}
+.card .btn{width:100%}
+.pop{position:relative;transform:scale(1.03)}
+.tag{position:absolute;top:-16px;right:18px;background:var(--orange);color:#241a4d;font-weight:800;padding:4px 14px;border-radius:999px;font-size:14px}
+footer{padding:30px 0 50px;color:var(--mute);text-align:center}
+/* meeting */
+#room{position:fixed;inset:0;background:var(--bg);z-index:20;display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#room.on{display:flex}
+.top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;gap:10px;flex-wrap:wrap;background:var(--bg2)}
+.pill{background:var(--card);padding:6px 14px;border-radius:999px;font-weight:700;font-size:14px}
+.stage{flex:1;display:flex;min-height:0}
+.videos{flex:1;display:grid;gap:12px;padding:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-content:center;overflow:auto}
+.vid{position:relative;background:linear-gradient(135deg,var(--violet),var(--pink));border-radius:24px;overflow:hidden;aspect-ratio:16/9;display:grid;place-items:center}
+.vid video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.vid.screen video{transform:none;object-fit:contain;background:#000}
+.vid .nm{position:absolute;left:12px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;padding:3px 12px;border-radius:999px;font-size:14px}
+.av{font-size:56px;font-weight:800;color:#fff}
+.invite{background:var(--card);border-radius:24px;aspect-ratio:16/9;display:grid;place-items:center;text-align:center;padding:18px;border:3px dashed var(--teal);color:var(--mute)}
+#chat{width:300px;background:var(--bg2);display:none;flex-direction:column;padding:12px;gap:8px}
+#chat.on{display:flex}
+#msgs{flex:1;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.m{background:var(--card);padding:8px 12px;border-radius:16px;align-self:flex-start;max-width:90%;overflow-wrap:anywhere}
+.m.me{align-self:flex-end;background:var(--violet);color:#fff}
+.bar{display:flex;justify-content:center;gap:12px;padding:14px;background:var(--bg2);flex-wrap:wrap}
+.ic{width:56px;height:56px;border-radius:50%;background:var(--card);font-size:22px;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.ic.off{background:var(--pink);color:#fff}.ic.on{background:var(--teal);color:#fff}
+.ic.end{background:#e11d48;color:#fff;width:auto;padding:0 24px;border-radius:999px;font-weight:800;font-size:16px}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(10,6,30,.7);display:none;place-items:center;z-index:40;padding:16px}
+.modal.on{display:grid}
+.box{background:var(--card);border-radius:28px;padding:26px;max-width:460px;width:100%;max-height:92vh;overflow:auto;border-top:10px solid var(--green)}
+.box h3{font-size:26px;margin-bottom:10px}
+.mp{background:linear-gradient(90deg,#16a34a,#3ddc84);color:#fff;border-radius:18px;padding:14px 16px;margin:12px 0;font-weight:700}
+.mp b{font-size:22px;display:block}
+.box ol{color:var(--mute);padding-left:20px}
+.box input{width:100%;margin:6px 0;flex:none}
+.err{color:var(--pink);font-weight:700;min-height:22px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--green);color:#052e16;font-weight:800;padding:12px 22px;border-radius:999px;z-index:60;display:none}
+.vid.rm video{transform:none}
+.vid.rm .av{position:relative}
+.rx{display:flex;gap:6px}.rx .ic{width:44px;height:44px;font-size:20px}
+.fl{position:fixed;bottom:90px;font-size:44px;z-index:50;animation:up 2.5s forwards;pointer-events:none}
+@keyframes up{to{transform:translateY(-300px);opacity:0}}
+.note{color:var(--mute);font-size:14px;margin:8px 0 0}
+.cl{background:var(--bg2);border-radius:16px;padding:12px;margin:8px 0;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cl button{padding:6px 14px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}.pop{transform:none}#chat{position:absolute;right:0;top:0;bottom:0;z-index:3}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav><div class="logo"><i>H</i>Henry</div>
+<div class="links"><a href="#features">Features</a><a href="#pricing">Pricing</a><span class="pill" id="planPill">Free plan</span><button class="btn ghost" id="admBtn" style="display:none;padding:6px 14px">Payments</button></div></nav>
+
+<div class="hero">
+<div>
+<h1>Meet anyone, anywhere. Free.</h1>
+<p>Video and voice calls with friends, family and teams around the world. Start free in one click, and upgrade with M-Pesa when you want the best experience.</p>
+<div class="row" id="invBanner" style="display:none"><span class="pill">You’ve been invited to a meeting. Enter your name, then press Join.</span></div>
+<div class="row"><input id="nameIn" placeholder="Your name" aria-label="Your name" maxlength="30"></div>
+<div class="row"><button class="btn" id="newBtn">Start a meeting</button></div>
+<div class="row"><input id="codeIn" placeholder="Enter a meeting code" aria-label="Meeting code"><button class="btn alt" id="joinBtn">Join</button></div>
+</div>
+<div class="tiles" aria-hidden="true"><div class="tile">A</div><div class="tile">J</div><div class="tile">W</div><div class="tile">M</div><div class="tile">S</div><div class="tile">K</div></div>
+</div>
+
+<section id="features"><h2>Everything you need to talk</h2><p class="sub">The basics are free forever.</p>
+<div class="grid">
+<div class="card" style="--c:var(--pink)"><h3>HD video calls</h3><p>Camera on, faces in a colourful grid.</p></div>
+<div class="card" style="--c:var(--teal)"><h3>Voice only</h3><p>Low on data? Turn the camera off and just talk.</p></div>
+<div class="card" style="--c:var(--orange)"><h3>Screen sharing</h3><p>Show your slides, your work or your game.</p></div>
+<div class="card" style="--c:var(--violet)"><h3>Live chat</h3><p>Drop links and notes without interrupting.</p></div>
+</div></section>
+
+<section id="pricing"><h2>Free to start. Better when you pay.</h2><p class="sub">Prices in Kenyan shillings, paid by M-Pesa.</p>
+<div class="grid">
+<div class="card" style="--c:var(--blue)"><h3>Free</h3><div class="price">KES 0</div>
+<ul><li>40-minute meetings</li><li>Up to 720p video</li><li>Voice, video, chat, screen share</li></ul><button class="btn ghost" id="freeBtn">Use free</button></div>
+<div class="card pop" style="--c:var(--pink)"><span class="tag">Most popular</span><h3>Plus</h3><div class="price">KES 250<small> / month</small></div>
+<ul><li>No time limit</li><li>Full HD 1080p video</li><li>Record meetings to your device</li></ul><button class="btn" data-plan="Plus" data-price="250">Get Plus</button></div>
+<div class="card" style="--c:var(--orange)"><h3>Pro</h3><div class="price">KES 700<small> / month</small></div>
+<ul><li>Everything in Plus</li><li>Gold badge in meetings</li><li>Priority support</li></ul><button class="btn alt" data-plan="Pro" data-price="700">Get Pro</button></div>
+</div></section>
+<footer>© Henry · Questions about payment? Call 0181288331 (Henry Okoth)</footer>
+</div>
+
+<div id="room" role="dialog" aria-label="Meeting">
+<div class="top"><span class="pill" id="rcode"></span><span class="pill" id="timer">00:00</span><span class="pill" id="count">1 in meeting</span><button class="btn alt" id="copyBtn" style="padding:8px 16px">Copy invite</button></div>
+<div class="stage"><div class="videos" id="videos"></div>
+<aside id="chat"><b>Chat</b><div id="msgs"></div><div class="row" style="margin:0"><input id="chatIn" placeholder="Message" aria-label="Message"><button class="btn" id="send" style="padding:10px 16px">Send</button></div></aside></div>
+<div class="bar">
+<button class="ic" id="mic" title="Microphone" aria-label="Toggle microphone">🎤</button>
+<button class="ic" id="cam" title="Camera" aria-label="Toggle camera">📹</button>
+<button class="ic" id="scr" title="Share screen" aria-label="Share screen">🖥️</button>
+<button class="ic" id="rec" title="Record (Plus)" aria-label="Record">⏺️</button>
+<span class="rx"><button class="ic" data-r="👏" aria-label="Clap">👏</button><button class="ic" data-r="😂" aria-label="Laugh">😂</button><button class="ic" data-r="🎉" aria-label="Celebrate">🎉</button><button class="ic" data-r="✋" aria-label="Raise hand">✋</button></span>
+<button class="ic" id="chatB" title="Chat" aria-label="Toggle chat">💬</button>
+<button class="ic end" id="leave">Leave</button>
+</div></div>
+
+<div class="modal" id="pay"><div class="box">
+<h3 id="payTitle">Upgrade</h3>
+<div class="mp">Send money with M-Pesa to<b>0181288331</b>Name: Henry Okoth · Amount: KES <span id="payAmt"></span></div>
+<ol><li>Open M-Pesa and choose Send Money.</li><li>Enter 0181288331 and confirm the name Henry Okoth.</li><li>Pay the amount shown, then enter the M-Pesa confirmation code from your SMS below.</li></ol>
+<input id="payName" placeholder="Your name" aria-label="Your name" maxlength="40">
+<input id="payPhone" placeholder="Your M-Pesa phone number" inputmode="tel" aria-label="Phone number">
+<input id="payCode" placeholder="Confirmation code (e.g. SJK4L2M9QP)" maxlength="10" aria-label="M-Pesa confirmation code">
+<div class="err" id="payErr"></div><p class="note">Henry checks each M-Pesa code against his payment SMS. Once approved, your plan unlocks on your account for 30 days.</p>
+<div class="row" style="margin:0"><button class="btn" id="payGo">Send for confirmation</button><button class="btn ghost" id="payX">Cancel</button></div>
+</div></div>
+<div class="modal" id="adm"><div class="box"><h3>Payment requests</h3><div id="claims"></div><button class="btn ghost" id="admX">Close</button></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var plan="Free",stream=null,screenStream=null,tInt=null,t0=0,rec=null,chunks=[],code="",myName="Guest",selected=null;
+var user=null,db=null,room=null,downloads=null,myId=null,rm=null,me="",remotes={},bufs={},unsubs=[],pending=false;
+var ICE={iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]};
+function paid(){return plan!=="Free"}
+function setPill(){$("planPill").textContent=plan==="Pro"?"★ Pro plan":plan==="Plus"?"Plus plan":pending?"Free · payment pending":"Free plan"}
+function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display="none"},3800)}
+setPill();
+function hashCode(){var h=(location.hash||"").slice(1);return /^[a-z0-9-]{3,40}$/i.test(h)?h:""}
+function showInvite(){var hc=hashCode();if(hc){$("codeIn").value=hc;$("invBanner").style.display="flex"}}
+showInvite();window.addEventListener("hashchange",showInvite);
+/* ---- platform capabilities (light up when available) ---- */
+(async function(){
+if(!window.claude||!window.claude.use)return;
+try{user=await claude.use("user")}catch(e){}
+try{db=await claude.use("db")}catch(e){}
+try{room=await claude.use("room")}catch(e){}
+try{downloads=await claude.use("downloads")}catch(e){}
+try{
+if(user){myId=await user.id();
+if(await user.isOwner())$("admBtn").style.display="inline-block";
+var pr=await user.me();if(pr&&pr.name&&!$("nameIn").value){$("nameIn").value=pr.name}}
+if(db&&myId){db.doc("grants/"+myId).onSnapshot(function(s){var d=s.exists&&s.data();
+if(d&&d.until>Date.now()&&(d.plan==="Plus"||d.plan==="Pro")){if(plan!==d.plan){toast("Your "+d.plan+" plan is active. Enjoy!")}plan=d.plan;pending=false}else plan="Free";setPill()},function(){})}
+}catch(e){}
+})();
+function mkCode(){var a="abcdefghijkmnpqrstuvwxyz",p=function(n){var s="";for(var i=0;i<n;i++)s+=a[Math.floor(Math.random()*a.length)];return s};return p(3)+"-"+p(4)+"-"+p(3)}
+function tile(id,name,cls){var d=document.createElement("div");d.className="vid "+(cls||"");d.id=id;
+d.innerHTML='<div class="av"></div><span class="nm"></span>';setName(d,name);return d}
+function setName(d,name){d.querySelector(".av").textContent=(name||"?").charAt(0).toUpperCase();d.querySelector(".nm").textContent=name}
+/* ---- signalling over the room (chunked to fit message limits) ---- */
+function sendSig(to,obj){var s=JSON.stringify(obj),k=Math.random().toString(36).slice(2,8),n=Math.ceil(s.length/2800);
+for(var i=0;i<n;i++)rm.emit("sig",{to:to,k:k,i:i,n:n,s:s.slice(i*2800,(i+1)*2800)}).catch(function(){})}
+function onChunk(m){var d=m.data;if(m.isMe||!d||d.to!==me)return;var key=m.peer+d.k,b=bufs[key]=bufs[key]||{p:[],c:0};
+if(!b.p[d.i]){b.p[d.i]=d.s;b.c++}if(b.c===d.n){delete bufs[key];try{onSig(m.peer,JSON.parse(b.p.join("")))}catch(e){}}}
+function addRemote(pid,name){if(remotes[pid])return remotes[pid];var t=tile("r"+pid,name||"Guest","rm");var v=document.createElement("video");v.autoplay=true;v.playsInline=true;t.insertBefore(v,t.firstChild);
+var inv=$("invite");$("videos").insertBefore(t,inv);if(inv)inv.style.display="none";return remotes[pid]={tile:t,video:v,pc:null,q:[]}}
+function mkPC(pid){var r=remotes[pid],pc=new RTCPeerConnection(ICE);r.pc=pc;
+stream.getTracks().forEach(function(t){pc.addTrack(t,stream)});
+pc.onicecandidate=function(e){if(e.candidate)sendSig(pid,{c:e.candidate})};
+pc.ontrack=function(e){r.video.srcObject=e.streams[0];r.tile.querySelector(".av").style.display="none"};return pc}
+async function call(pid){var r=addRemote(pid),pc=mkPC(pid);var o=await pc.createOffer();await pc.setLocalDescription(o);sendSig(pid,{t:"o",d:pc.localDescription})}
+async function flush(r){while(r.q.length)try{await r.pc.addIceCandidate(r.q.shift())}catch(e){}}
+async function onSig(from,d){var r=addRemote(from);
+if(d.t==="o"){var pc=r.pc||mkPC(from);await pc.setRemoteDescription(d.d);await flush(r);var a=await pc.createAnswer();await pc.setLocalDescription(a);sendSig(from,{t:"a",d:pc.localDescription})}
+else if(d.t==="a"&&r.pc){await r.pc.setRemoteDescription(d.d);await flush(r)}
+else if(d.c){if(r.pc&&r.pc.remoteDescription)r.pc.addIceCandidate(d.c).catch(function(){});else r.q.push(d.c)}}
+function dropRemote(pid){var r=remotes[pid];if(!r)return;if(r.pc)r.pc.close();r.tile.remove();delete remotes[pid];
+if(!Object.keys(remotes).length&&$("invite"))$("invite").style.display=""}
+async function joinRoom(){
+if(!room){toast("Group calling needs you to open Henry signed in to claude.ai. You’re in solo mode.");return}
+try{rm=await room.join("henry-"+code.toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,40))}catch(e){toast("Could not open the meeting room ("+(e&&e.code||"error")+")");return}
+var peers=rm.peers().filter(function(p){return p.isMe&&p.sameTab})[0];me=peers?peers.peer:"";
+rm.presence({name:myName,plan:plan});
+unsubs.push(rm.onPeers(function(ch){
+if(!me){var q=ch.peers.filter(function(p){return p.isMe&&p.sameTab})[0];if(q)me=q.peer}
+ch.joined.forEach(function(p){if(p.isMe||p.kind!=="viewer")return;var nm=(p.presence&&p.presence.name)||"Guest";var r=addRemote(p.peer,nm);if(me&&me<p.peer&&!r.pc)call(p.peer).catch(function(){})});
+ch.updated.forEach(function(p){var r=remotes[p.peer];if(r&&p.presence&&p.presence.name)setName(r.tile,String(p.presence.name).slice(0,30)+(p.presence.plan==="Pro"?" ★":""))});
+ch.left.forEach(function(p){dropRemote(p.peer)});$("count").textContent=Math.max(1,ch.peers.filter(function(p){return p.kind==="viewer"}).length)+" in meeting"}));
+unsubs.push(rm.on("sig",onChunk));
+unsubs.push(rm.on("chat",function(m){var d=m.data||{};var el=document.createElement("div");el.className="m"+(m.isMe?" me":"");el.textContent=(m.isMe?"You":String(d.n||"Guest").slice(0,30))+": "+String(d.t||"").slice(0,500);$("msgs").appendChild(el);$("msgs").scrollTop=1e5;if(!m.isMe&&!$("chat").classList.contains("on"))toast("New chat message")}));
+unsubs.push(rm.on("react",function(m){var d=m.data||{};if(["👏","😂","🎉","✋"].indexOf(d.e)<0)return;var f=document.createElement("div");f.className="fl";f.textContent=d.e;f.style.left=(10+Math.random()*75)+"vw";document.body.appendChild(f);setTimeout(function(){f.remove()},2600);if(d.e==="✋"&&!m.isMe)toast(String(d.n||"Someone").slice(0,30)+" raised a hand")}))}
+async function start(c){
+myName=($("nameIn").value.trim()||"Guest").slice(0,30);code=c||mkCode();
+try{stream=await navigator.mediaDevices.getUserMedia({audio:true,video:{width:{ideal:paid()?1920:1280},height:{ideal:paid()?1080:720}}})}
+catch(e){try{stream=await navigator.mediaDevices.getUserMedia({audio:true});toast("Camera unavailable – joined with voice only")}
+catch(e2){toast("Allow camera and microphone access to start a meeting");return}}
+$("rcode").textContent="Code: "+code;$("room").className="on";
+var v=$("videos");v.innerHTML="";
+var m=tile("me",myName+(plan==="Pro"?" ★":""));var vi=document.createElement("video");vi.autoplay=true;vi.muted=true;vi.playsInline=true;vi.srcObject=stream;
+if(stream.getVideoTracks().length){m.insertBefore(vi,m.firstChild);m.querySelector(".av").style.display="none"}v.appendChild(m);
+var inv=document.createElement("div");inv.className="invite";inv.id="invite";inv.innerHTML="<div><b>Waiting for others</b><br>Share this link to invite people:<br><b class='lk' style='overflow-wrap:anywhere'></b><br><br><button class='btn alt' id='cp2' style='padding:8px 16px'>Copy link</button></div>";inv.querySelector(".lk").textContent=link();inv.querySelector("#cp2").onclick=function(){$("copyBtn").click()};v.appendChild(inv);
+$("mic").className="ic on";$("cam").className="ic on";$("count").textContent="1 in meeting";
+t0=Date.now();clearInterval(tInt);tInt=setInterval(tick,1000);tick();joinRoom()}
+function tick(){var s=Math.floor((Date.now()-t0)/1000),m=Math.floor(s/60);$("timer").textContent=(m<10?"0":"")+m+":"+(s%60<10?"0":"")+s%60+(paid()?"":" / 40:00");
+if(!paid()&&s>=2400){leave();toast("Free meetings last 40 minutes. Upgrade for unlimited time.")}}
+function leave(){
+if(rec&&rec.state!=="inactive")rec.stop();
+Object.keys(remotes).forEach(dropRemote);unsubs.forEach(function(u){try{u()}catch(e){}});unsubs=[];if(rm){rm.leave().catch(function(){});rm=null}
+[stream,screenStream].forEach(function(x){if(x)x.getTracks().forEach(function(t){t.stop()})});
+stream=screenStream=null;clearInterval(tInt);$("room").className="";$("chat").className="";$("msgs").innerHTML=""}
+$("newBtn").onclick=function(){start()};
+$("joinBtn").onclick=function(){var c=$("codeIn").value.trim().split("#").pop();if(!c){toast("Enter a meeting code first");return}start(c)};
+$("leave").onclick=leave;
+$("mic").onclick=function(){if(!stream)return;var t=stream.getAudioTracks()[0];if(!t)return;t.enabled=!t.enabled;$("mic").className="ic "+(t.enabled?"on":"off")};
+$("cam").onclick=function(){if(!stream)return;var t=stream.getVideoTracks()[0];if(!t){toast("No camera found");return}t.enabled=!t.enabled;$("cam").className="ic "+(t.enabled?"on":"off");var vv=document.querySelector("#me video");if(vv)vv.style.visibility=t.enabled?"visible":"hidden"};
+function swapVideo(track){Object.keys(remotes).forEach(function(k){var pc=remotes[k].pc;if(!pc)return;pc.getSenders().forEach(function(s){if(s.track&&s.track.kind==="video")s.replaceTrack(track).catch(function(){})})})}
+$("scr").onclick=async function(){
+if(screenStream){screenStream.getTracks().forEach(function(t){t.stop()});return}
+try{screenStream=await navigator.mediaDevices.getDisplayMedia({video:true});
+var tr=screenStream.getVideoTracks()[0],d=tile("screen","Your screen","screen");var v=document.createElement("video");v.autoplay=true;v.muted=true;v.srcObject=screenStream;d.insertBefore(v,d.firstChild);d.querySelector(".av").style.display="none";$("videos").appendChild(d);$("scr").className="ic on";swapVideo(tr);
+tr.onended=function(){d.remove();screenStream=null;$("scr").className="ic";var cam=stream&&stream.getVideoTracks()[0];if(cam)swapVideo(cam)}}
+catch(e){toast("Screen sharing isn’t available here")}};
+$("rec").onclick=function(){
+if(!paid()){toast("Recording is a Plus feature");openPay("Plus",250);return}
+if(rec&&rec.state==="recording"){rec.stop();$("rec").className="ic";return}
+try{chunks=[];rec=new MediaRecorder(stream);rec.ondataavailable=function(e){if(e.data.size)chunks.push(e.data)};
+rec.onstop=function(){var b=new Blob(chunks,{type:"video/webm"});if(downloads)downloads.save({filename:"henry-"+code+".webm",data:b}).then(function(){toast("Recording saved")}).catch(function(){toast("Recording not saved")});else toast("Saving files isn’t available in this view")};
+rec.start();$("rec").className="ic off";toast("Recording your camera and mic")}catch(e){toast("Recording isn’t supported in this browser")}};
+$("chatB").onclick=function(){$("chat").classList.toggle("on")};
+function say(){var i=$("chatIn"),t=i.value.trim();if(!t)return;if(!rm){toast("Chat needs a connected meeting");return}rm.emit("chat",{n:myName,t:t}).catch(function(){toast("Message not sent")});i.value=""}
+$("send").onclick=say;$("chatIn").onkeydown=function(e){if(e.key==="Enter")say()};
+document.querySelectorAll("[data-r]").forEach(function(b){b.onclick=function(){if(rm)rm.emit("react",{e:b.dataset.r,n:myName}).catch(function(){});else toast("Reactions need a connected meeting")}});
+var BASE="https://claude.ai/artifact/JM2D1fX785gMfjpqQ1aB5z";function link(){return BASE+"#"+code}
+$("copyBtn").onclick=function(){var t="Join my Henry meeting: "+link();try{navigator.clipboard.writeText(t).then(function(){toast("Invite copied")},function(){toast(t)})}catch(e){toast(t)}};
+$("freeBtn").onclick=function(){$("newBtn").click()};
+/* ---- payments ---- */
+function openPay(p,a){selected={p:p,a:a};$("payTitle").textContent="Upgrade to Henry "+p;$("payAmt").textContent=a;$("payErr").textContent="";$("pay").classList.add("on")}
+document.querySelectorAll("[data-plan]").forEach(function(b){b.onclick=function(){openPay(b.dataset.plan,b.dataset.price)}});
+$("payX").onclick=function(){$("pay").classList.remove("on")};
+$("payGo").onclick=async function(){
+var n=$("payName").value.trim(),ph=$("payPhone").value.replace(/\s/g,""),c=$("payCode").value.trim().toUpperCase();
+if(!n){$("payErr").textContent="Enter your name.";return}
+if(!/^(\+?254|0)[17]\d{8}$/.test(ph)){$("payErr").textContent="Enter a valid Kenyan phone number.";return}
+if(!/^[A-Z0-9]{10}$/.test(c)){$("payErr").textContent="The M-Pesa code has 10 letters and numbers.";return}
+if(!db||!myId){$("payErr").textContent="Open Henry signed in to claude.ai so your payment can be linked to your account.";return}
+try{await db.doc("claims/"+myId).set({name:n,phone:ph,code:c,plan:selected.p,amount:Number(selected.a),at:Date.now(),status:"pending"})}
+catch(e){$("payErr").textContent="Could not send your payment. Check your connection and try again.";return}
+pending=true;setPill();$("pay").classList.remove("on");toast("Sent! Your "+selected.p+" plan unlocks as soon as Henry confirms the payment.")};
+/* ---- owner payment review ---- */
+var admUn=null;
+$("admBtn").onclick=function(){$("adm").classList.add("on");if(admUn||!db)return;
+admUn=db.collection("claims").onSnapshot(function(q){var box=$("claims");box.innerHTML="";var docs=q.docs.filter(function(d){return d.data().status==="pending"});
+if(!docs.length){box.innerHTML='<p class="note">No pending payments.</p>';return}
+var seen={};q.docs.forEach(function(d){var c=d.data().code;seen[c]=(seen[c]||0)+1});
+docs.forEach(function(d){var x=d.data(),row=document.createElement("div");row.className="cl";var t=document.createElement("div");
+t.textContent=x.name+" · "+x.phone+" · "+x.plan+" KES "+x.amount+" · code "+x.code+(seen[x.code]>1?" ⚠ code used twice":"");
+var ok=document.createElement("button");ok.className="btn alt";ok.textContent="Approve";
+ok.onclick=async function(){try{await db.doc("grants/"+d.id).set({plan:x.plan,until:Date.now()+30*864e5,name:x.name});await db.doc("claims/"+d.id).update({status:"approved"});toast("Approved "+x.name)}catch(e){toast("Could not approve")}};
+var no=document.createElement("button");no.className="btn ghost";no.textContent="Reject";
+no.onclick=async function(){try{await db.doc("claims/"+d.id).update({status:"rejected"})}catch(e){toast("Could not reject")}};
+row.appendChild(t);row.appendChild(ok);row.appendChild(no);box.appendChild(row)})},function(){toast("Could not load payments")})};
+$("admX").onclick=function(){$("adm").classList.remove("on")};
+})();
+</script>
+</body>
+</html>
